@@ -16,19 +16,32 @@ def main(category,limit):
     response = opener.open(url)
 
     arr = []
-    
+
     jsondata = json.loads(response.read())
     for i in jsondata["data"]["children"]:
         f = i["data"]["url"]
         #if images
         if  f[-4:] in [".jpg",".png",".gif"]:
-            arr.append( [ i["data"]["title"] , f ])
+            d={}
+            d['title'] = i["data"]["title"]
+            d['type'] = 'image'
+            d['url'] = f
+            arr.append(d)
         elif "http://imgur.com/" in f:
             f = "http://i."+f.split('/')[2]+"/"+f.split('/')[3]+".jpg"
-            arr.append( [ i["data"]["title"] , f ])
+            d ={}
+            d['title'] = i["data"]["title"]
+            d['type'] = 'image'
+            d['url'] = f
+            arr.append(d)
+            
         #youtube videos
         elif "youtube.com/watch" in f or "vimeo.com" in f:
-            arr.append( [ i["data"]["title"] , f ])
+            d = {}
+            d['title'] = i["data"]["title"]
+            d['url'] = f
+            d['type'] = 'video'
+            arr.append(d)
 
     return json.dumps(arr)
 
